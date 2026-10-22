@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Ribbon Week · Colorado Connections Academy</title>
+<meta name="description" content="Red Ribbon Week activities for Colorado Connections Academy students.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF7EF;
+    --card: #FFFFFF;
+    --ink: #1B1547;
+    --muted: #625D80;
+    --navy: #1B1547;
+    --lavender: #C3BDFF;
+    --lavender-soft: #EEEBFF;
+    --red: #D7263D;
+    --red-dark: #A8182C;
+    --red-soft: #FFE3E6;
+    --gold: #FFB627;
+    --green: #2E9E6A;
+    --green-soft: #DDF5E9;
+    --line: #EADFD3;
+    --shadow: 0 3px 0 #EADFD3, 0 10px 24px rgba(42,34,56,.06);
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Nunito", system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.45;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 12% 8%, #FFE9D6 0 120px, transparent 121px),
+      radial-gradient(circle at 92% 30%, #FFE3E6 0 90px, transparent 91px);
+    background-attachment: fixed;
+  }
+  h1, h2, h3, .display { font-family: "Fredoka", "Nunito", sans-serif; letter-spacing: .2px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  header.top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  header.top .title { font-family: "Fredoka", "Nunito", system-ui, sans-serif; font-weight: 700; font-size: 22px; line-height: 1.1; }
+  header.top .title small { display: block; font-weight: 500; font-size: 14px; color: var(--muted); }
+  header.top .who { margin-left: auto; font-size: 14px; color: var(--muted); text-align: right; }
+  header.top .who b { color: var(--ink); }
+  .linkbtn { background: none; border: 0; color: var(--red); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline; }
+
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+  .hero { text-align: center; padding: 32px 24px; }
+  .hero h1 { font-size: clamp(30px, 6vw, 44px); margin: 8px 0 6px; color: var(--red); }
+  .hero p { color: var(--muted); margin: 0 auto 20px; max-width: 460px; }
+
+  label.field { display: block; font-weight: 700; margin: 18px 0 8px; text-align: left; }
+  .hint { font-weight: 400; color: var(--muted); font-size: 15px; }
+  input[type=text], textarea {
+    width: 100%; font: inherit; color: var(--ink); background: #FFFCF8;
+    border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; outline: none;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  input[type=text]:focus, textarea:focus { border-color: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+  .count { text-align: right; font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    font: inherit; font-weight: 700; cursor: pointer; border-radius: 999px;
+    border: 2px solid var(--line); background: #fff; color: var(--ink); padding: 10px 16px;
+    transition: transform .08s ease, background .15s ease, border-color .15s ease;
+  }
+  .chip:hover { border-color: var(--red); }
+  .chip[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+  .chip:active { transform: scale(.97); }
+
+  .btn {
+    font-family: "Fredoka", "Nunito", system-ui, sans-serif; font-weight: 600; font-size: 20px; cursor: pointer;
+    border: 0; border-radius: 16px; padding: 14px 26px; color: #fff; background: var(--red);
+    box-shadow: 0 4px 0 var(--red-dark); transition: transform .08s ease, box-shadow .08s ease, opacity .15s;
+  }
+  .btn:hover { filter: brightness(1.05); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--red-dark); }
+  .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; box-shadow: 0 4px 0 var(--red-dark); }
+  .btn.ghost { background: #fff; color: var(--ink); box-shadow: 0 4px 0 var(--line); border: 2px solid var(--line); }
+  .actions { display: flex; gap: 12px; justify-content: space-between; align-items: center; margin-top: 24px; flex-wrap: wrap; }
+
+  .menu-head { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 6px 0 14px; flex-wrap: wrap; }
+  .menu-head h2 { margin: 0; font-size: 28px; }
+  .progress { font-size: 15px; color: var(--muted); font-weight: 700; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .tile {
+    text-align: left; font: inherit; color: var(--ink); cursor: pointer; position: relative;
+    background: var(--card); border: 2px solid transparent; border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 18px; transition: transform .12s ease, border-color .12s;
+  }
+  .tile:hover { transform: translateY(-3px); border-color: var(--red); }
+  .tile .emoji { font-size: 38px; line-height: 1; display: block; margin-bottom: 10px; }
+  .tile h3 { margin: 0 0 4px; font-size: 21px; }
+  .tile p { margin: 0; color: var(--muted); font-size: 15px; }
+  .tile .done {
+    position: absolute; top: 12px; right: 12px; background: var(--green); color: #fff;
+    font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; display: none;
+  }
+  .tile.is-done .done { display: inline-block; }
+
+  .act-head { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+  .act-head .emoji { font-size: 44px; }
+  .act-head h2 { margin: 0; font-size: 28px; }
+  .lead { color: var(--muted); margin: 4px 0 8px; }
+
+  .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .opt {
+    font: inherit; cursor: pointer; text-align: center; color: var(--ink); background: #fff;
+    border: 3px solid var(--line); border-radius: 18px; padding: 16px 10px; font-weight: 700;
+    transition: transform .08s, border-color .15s, background .15s;
+  }
+  .opt .big { font-size: 40px; display: block; margin-bottom: 6px; }
+  .opt small { display: block; font-weight: 400; color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .opt:hover { border-color: var(--red); }
+  .opt[aria-pressed="true"] { border-color: var(--red); background: var(--red-soft); }
+
+  .pledge {
+    background: var(--red-soft); border-left: 6px solid var(--red); border-radius: 14px;
+    padding: 18px 20px; font-family: "Fredoka", "Nunito", system-ui, sans-serif; font-size: 21px; line-height: 1.4; margin: 14px 0;
+  }
+  .check { display: flex; gap: 12px; align-items: center; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  .check input { width: 28px; height: 28px; accent-color: var(--red); }
+
+  .scenario { border-top: 2px dashed var(--line); padding-top: 18px; margin-top: 18px; }
+  .scenario:first-of-type { border-top: 0; padding-top: 0; }
+  .scenario h3 { margin: 0 0 10px; font-size: 20px; }
+  .answers { display: grid; gap: 10px; }
+  .answer {
+    font: inherit; text-align: left; cursor: pointer; background: #fff; color: var(--ink);
+    border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; font-weight: 600;
+  }
+  .answer:hover { border-color: var(--red); }
+  .answer[aria-pressed="true"] { border-color: var(--red); background: var(--red-soft); }
+  .feedback { margin-top: 10px; border-radius: 12px; padding: 10px 14px; font-weight: 600; display: none; }
+  .feedback.good { display: block; background: var(--green-soft); color: #1C6B47; }
+  .feedback.think { display: block; background: #FFF1D6; color: #7A5200; }
+
+  .bingo { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+  .sq {
+    font: inherit; cursor: pointer; aspect-ratio: 1 / 1; border-radius: 16px; background: #fff;
+    border: 3px solid var(--line); color: var(--ink); font-weight: 700; font-size: 15px; padding: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; position: relative; min-width: 0; overflow-wrap: anywhere;
+  }
+  .sq .big { font-size: 30px; }
+  .sq[aria-pressed="true"] { background: var(--red); border-color: var(--red); color: #fff; }
+  .sq[aria-pressed="true"]::after {
+    content: "✓"; position: absolute; top: 6px; right: 10px; font-size: 18px;
+  }
+  .bingo-banner { text-align: center; font-family: "Fredoka", "Nunito", system-ui, sans-serif; font-size: 26px; color: var(--red); margin-top: 12px; min-height: 34px; }
+
+  .logo { width: 52px; height: 52px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--lavender); }
+  .flyer { display: block; width: min(260px, 70%); height: auto; margin: 0 auto 10px; border-radius: 14px; box-shadow: 0 8px 22px rgba(27,21,71,.18); transform: rotate(-2deg); }
+  .theme { display: inline-block; background: var(--navy); color: #fff; font-weight: 700; font-size: 14px; border-radius: 999px; padding: 6px 14px; margin-bottom: 6px; }
+
+  .info-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 18px; }
+  .info { border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .info h3 { margin: 0 0 6px; font-size: 21px; }
+  .info p { margin: 0 0 14px; font-size: 16px; }
+  .info.contest { background: linear-gradient(135deg, #FFF1D6, #FFE3E6); }
+  .info.counselor { background: var(--lavender-soft); }
+  .info .meta { font-size: 14px; color: var(--muted); margin: -6px 0 14px; }
+  a.btn { display: inline-block; text-decoration: none; text-align: center; }
+  .btn.navy { background: var(--navy); box-shadow: 0 4px 0 #0C0926; font-size: 18px; }
+  .btn.small { font-size: 17px; padding: 11px 18px; }
+
+  footer.help {
+    margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: var(--lavender-soft); border-radius: var(--radius); padding: 14px 18px; font-size: 16px;
+  }
+  footer.help .txt { flex: 1 1 220px; }
+  footer.help b { display: block; }
+
+  .drop {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    border: 3px dashed var(--line); border-radius: 18px; padding: 26px 16px; text-align: center; cursor: pointer;
+    background: #FFFCF8; font-weight: 700;
+  }
+  .drop:hover, .drop:focus-within { border-color: var(--red); }
+  .drop .big { font-size: 44px; }
+  .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .preview-img { display: block; max-width: 100%; max-height: 340px; margin: 12px auto 0; border-radius: 14px; box-shadow: var(--shadow); }
+
+  .status { margin-top: 14px; font-weight: 700; min-height: 24px; }
+  .status.err { color: var(--red-dark); }
+
+  .thanks { text-align: center; padding: 40px 24px; }
+  .thanks .big { font-size: 72px; }
+  .thanks h2 { font-size: 34px; color: var(--red); margin: 8px 0; }
+
+  .preview-note {
+    background: #2A2238; color: #fff; font-size: 14px; text-align: center; padding: 8px 12px; display: none;
+  }
+  .hidden { display: none !important; }
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+  .confetti i { position: absolute; top: -20px; width: 10px; height: 16px; border-radius: 3px; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+  @media (prefers-reduced-motion: reduce) { .confetti { display: none; } .tile, .btn, .chip { transition: none; } }
+
+  @media (max-width: 520px) {
+    body { font-size: 17px; }
+    .card { padding: 18px; }
+    .sq { font-size: 13px; }
+    .sq .big { font-size: 24px; }
+    header.top .title { font-size: 19px; }
+    header.top .title small { font-size: 12px; }
+    .logo { width: 44px; height: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="preview-note" id="previewNote">Preview mode: answers are not being saved yet. (Setup: add the Google Apps Script link to config.js.)</div>
+<div class="wrap">
+  <header class="top">
+    <img class="logo" src="assets/logo.png" alt="Colorado Connections Academy logo">
+    <div class="title">Red Ribbon Week<small>Colorado Connections Academy</small></div>
+    <div class="who hidden" id="who"><b id="whoName"></b> · Grade <span id="whoGrade"></span><br><button class="linkbtn" id="switchUser" type="button">Not you?</button></div>
+  </header>
+
+  <main id="app" aria-live="polite"></main>
+
+  <footer class="help">
+    <span style="font-size:34px" aria-hidden="true">💜</span>
+    <div class="txt"><b>Need to talk? Mrs. Pernal is here for you.</b>School Counselor · <span id="counselorEmailText"></span></div>
+    <a class="btn navy small" id="footerEmail" target="_blank" rel="noopener">✉️ Email Mrs. Pernal</a>
+  </footer>
+</div>
+<div class="confetti" id="confetti" aria-hidden="true"></div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Settings ---------- */
+  var COUNSELOR = { name: "Mrs. Pernal", email: "rpernal@coloca.connectionsacademy.org" };
+  var CONTEST_URL = "https://www.redribbon.org/contest";
+  var THEME = "Make a Difference. Be a Hero. Stay Drug Free.";
+  var FLYER_SRC = "assets/flyer.jpg";
+
+  function mailto(subject) {
+    return "mailto:" + COUNSELOR.email + "?subject=" + encodeURIComponent(subject);
+  }
+  document.getElementById("counselorEmailText").textContent = COUNSELOR.email;
+  document.getElementById("footerEmail").href = mailto("Red Ribbon Week - I'd like to talk");
+
+  /* ---------- Content ---------- */
+  var GRADES = [
+    { id: "K", label: "K", band: "K-2" }, { id: "1", label: "1st", band: "K-2" }, { id: "2", label: "2nd", band: "K-2" },
+    { id: "3", label: "3rd", band: "3-5" }, { id: "4", label: "4th", band: "3-5" }, { id: "5", label: "5th", band: "3-5" },
+    { id: "6", label: "6th", band: "6-8" }, { id: "7", label: "7th", band: "6-8" }, { id: "8", label: "8th", band: "6-8" }
+  ];
+
+  var ACTIVITIES = [
+    { id: "spirit",   emoji: "🎉", title: "Spirit Day Check-In", blurb: "Tell us how you dressed up today!" },
+    { id: "pledge",   emoji: "🎗️", title: "Take the Pledge",     blurb: "Make your promise to stay drug-free." },
+    { id: "slogan",   emoji: "📣", title: "Slogan Contest",      blurb: "Write a catchy Red Ribbon slogan." },
+    { id: "scenarios",emoji: "🤔", title: "What Would You Do?",  blurb: "Practice making smart choices." },
+    { id: "bingo",    emoji: "✅", title: "Healthy Choices Bingo", blurb: "Mark the healthy things you did." },
+    { id: "future",   emoji: "🌟", title: "My Bright Future",    blurb: "Share your big dreams." },
+    { id: "photo",    emoji: "📸", title: "Share a Photo",       blurb: "Send a picture of your spirit day or poster." }
+  ];
+
+  var SPIRIT_DAYS = [
+    { id: "red",     big: "❤️", name: "Red Day",            sub: "Wear red" },
+    { id: "shades",  big: "😎", name: "My Future Is Bright", sub: "Wear sunglasses" },
+    { id: "jersey",  big: "🏈", name: "Team Up",            sub: "Wear a jersey" },
+    { id: "socks",   big: "🧦", name: "Sock It to Drugs",    sub: "Wear crazy socks" },
+    { id: "hats",    big: "🎩", name: "Hats Off",           sub: "Wear a silly hat" },
+    { id: "costume", big: "🎃", name: "Say Boo to Drugs",   sub: "Wear a costume" }
+  ];
+
+  var PLEDGE = {
+    "K-2": "I promise to take care of my body. I will only take medicine from a grown-up I trust, and I will say NO to things that can hurt me.",
+    "3-5": "I pledge to make healthy choices. I will say no to drugs, alcohol, and vaping, and I will talk to a trusted adult when I need help.",
+    "6-8": "I pledge to live drug-free. I will make choices that protect my health and my future, stand up to peer pressure, and help my friends do the same."
+  };
+  var REASONS = [
+    "💪 I want to be healthy", "🧠 I want a strong brain", "🏆 I have big goals",
+    "👨‍👩‍👧 My family", "⚽ Sports & activities", "🤝 My friends", "😊 I like being me"
+  ];
+
+  var SLOGAN_PROMPT = {
+    "K-2": "Finish the sentence: \"I say NO to drugs because…\"",
+    "3-5": "Write a short, catchy slogan for a Red Ribbon poster.",
+    "6-8": "Write a slogan that would make someone your age stop and think."
+  };
+
+  var SCENARIOS = {
+    "K-2": [
+      { q: "You find little pills on the table that look like candy. What do you do?", a: [
+        { t: "Eat one — it looks yummy!", good: false, f: "Pills can look like candy, but they can make you very sick. Always ask a grown-up first." },
+        { t: "Leave them and tell a grown-up.", good: true, f: "Yes! Telling a grown-up keeps everyone safe." },
+        { t: "Share them with a friend.", good: false, f: "That could make your friend sick. Tell a grown-up instead." } ] },
+      { q: "A friend says, \"Let's play with the cleaning bottles under the sink!\" What do you say?", a: [
+        { t: "\"No way! Let's play tag instead.\"", good: true, f: "Great choice! Cleaning bottles are not toys." },
+        { t: "\"Okay, let's open them!\"", good: false, f: "Cleaning stuff can hurt your eyes, skin, and tummy. Pick a different game." },
+        { t: "Hide them so nobody finds them.", good: false, f: "It's better to leave them alone and tell a grown-up." } ] },
+      { q: "You feel really sad and grumpy. What can help?", a: [
+        { t: "Talk to someone I love.", good: true, f: "Yes! Sharing feelings helps a lot." },
+        { t: "Take three big, slow breaths.", good: true, f: "Yes! Deep breaths help your body calm down." },
+        { t: "Keep it all inside forever.", good: false, f: "Big feelings are okay. Telling someone helps them feel smaller." } ] }
+    ],
+    "3-5": [
+      { q: "An older kid at the bus stop offers you a vape and says, \"Everybody does it.\" What do you do?", a: [
+        { t: "Say \"No thanks\" and walk away.", good: true, f: "Nice! A clear \"no\" and leaving is a strong move." },
+        { t: "Try it once so they think you're cool.", good: false, f: "Vapes have nicotine, which is addictive and harms growing brains. Not everybody does it!" },
+        { t: "Say no, and tell a trusted adult later.", good: true, f: "Great choice — telling an adult helps keep other kids safe too." } ] },
+      { q: "A friend dares you to taste a drink from an adult's beer can. What do you say?", a: [
+        { t: "\"Nah, let's play a game instead.\"", good: true, f: "Changing the subject is a smart way to say no." },
+        { t: "Do it — it's just a dare.", good: false, f: "Alcohol is not safe for kids' bodies or brains. You can always skip a dare." },
+        { t: "Pretend to drink it.", good: false, f: "You don't have to pretend. A real \"no\" is okay!" } ] },
+      { q: "You see an online video of kids doing a dangerous \"challenge\" with medicine. What do you do?", a: [
+        { t: "Try it to see what happens.", good: false, f: "These challenges have hurt real kids. Never take medicine as a game." },
+        { t: "Tell a parent or teacher about it.", good: true, f: "Yes! Adults can help report it and keep others safe." },
+        { t: "Share it with friends.", good: false, f: "Sharing spreads danger. Tell a trusted adult instead." } ] }
+    ],
+    "6-8": [
+      { q: "At a hangout, someone passes around a vape and everyone is watching to see what you do.", a: [
+        { t: "Say \"I'm good\" and change the subject.", good: true, f: "Confident and simple — that's often all it takes." },
+        { t: "Take it so it's not awkward.", good: false, f: "The awkward moment passes; nicotine addiction doesn't. Real friends respect a no." },
+        { t: "Text a parent a code word so they call you home.", good: true, f: "Smart! Having an exit plan is a great strategy." } ] },
+      { q: "A friend tells you they've been taking a parent's prescription pills to deal with stress. What do you do?", a: [
+        { t: "Keep it secret so they don't get in trouble.", good: false, f: "This is a secret that's not safe to keep. Their health matters more." },
+        { t: "Tell a trusted adult or the school counselor.", good: true, f: "That takes courage — and it could protect your friend's life." },
+        { t: "Tell them it's no big deal.", good: false, f: "Taking someone else's prescription can be very dangerous. Get an adult involved." } ] },
+      { q: "Someone online offers you \"study pills\" to help you focus for a test.", a: [
+        { t: "Buy a few — everyone wants better grades.", good: false, f: "Pills from someone who isn't a doctor or pharmacist can be fake and deadly." },
+        { t: "Block them and tell a trusted adult.", good: true, f: "Exactly right. That protects you and other kids." },
+        { t: "Ask a friend to try them first.", good: false, f: "That puts your friend in danger. Block and report instead." } ] }
+    ]
+  };
+
+  var BINGO = {
+    "K-2": [
+      ["💧","Drank water"],["🥦","Ate a veggie"],["🛌","Went to bed on time"],
+      ["🏃","Played outside"],["📚","Read a book"],["🤗","Helped someone"],
+      ["🪥","Brushed my teeth"],["😊","Said something kind"],["🧘","Took deep breaths"]
+    ],
+    "3-5": [
+      ["💧","Drank 5 cups of water"],["🥦","Ate fruits & veggies"],["🛌","Slept 9+ hours"],
+      ["🏃","Exercised 30 minutes"],["📚","Read for fun"],["🤗","Helped at home"],
+      ["📵","Took a screen break"],["😊","Gave a compliment"],["🗣️","Talked about my feelings"]
+    ],
+    "6-8": [
+      ["💧","Stayed hydrated all day"],["🥗","Ate a balanced meal"],["🛌","Slept 8+ hours"],
+      ["🏃","Got 60 min of activity"],["📚","Learned something new"],["🤝","Helped someone out"],
+      ["📵","Unplugged for an hour"],["🧘","Managed stress well"],["🗣️","Checked in with a friend"]
+    ]
+  };
+
+  var DREAMS = [
+    ["👩‍⚕️","Doctor"],["👨‍🚒","Firefighter"],["👩‍🏫","Teacher"],["🧑‍🚀","Astronaut"],
+    ["🧑‍🎨","Artist"],["⚽","Athlete"],["🧑‍🔬","Scientist"],["🐾","Vet"],["🎤","Singer"],["💻","Inventor"]
+  ];
+  var FUTURE_PROMPT = {
+    "K-2": "Tell us one thing you want to do when you grow up.",
+    "3-5": "What is a big dream you have? How will healthy choices help you get there?",
+    "6-8": "Write a short letter to yourself 10 years from now. What goals are you working toward, and how will staying drug-free help?"
+  };
+
+  /* ---------- State ---------- */
+  var state = { name: "", grade: "", band: "", done: {} };
+
+  function store(key, val) { try { localStorage.setItem("rrw_" + key, JSON.stringify(val)); } catch (e) {} }
+  function load(key) { try { var v = localStorage.getItem("rrw_" + key); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+
+  var saved = load("me");
+  if (saved && saved.name && saved.grade) {
+    state.name = saved.name; state.grade = saved.grade; state.band = bandFor(saved.grade);
+    state.done = load("done_" + saved.name + "_" + saved.grade) || {};
+  }
+
+  function bandFor(g) { for (var i = 0; i < GRADES.length; i++) if (GRADES[i].id === g) return GRADES[i].band; return "3-5"; }
+  function gradeLabel(g) { for (var i = 0; i < GRADES.length; i++) if (GRADES[i].id === g) return GRADES[i].label; return g; }
+
+  /* ---------- Backend ---------- */
+  /* Submissions go to the Google Apps Script web app URL set in config.js. */
+  var SUBMIT_URL = (window.RRW_CONFIG && window.RRW_CONFIG.SUBMIT_URL) || "";
+  var hasBackend = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(SUBMIT_URL) ||
+                   (window.RRW_CONFIG && window.RRW_CONFIG.ALLOW_TEST_URL && /^http/.test(SUBMIT_URL));
+  if (!hasBackend) document.getElementById("previewNote").style.display = "block";
+
+  function send(payload, ok, fail) {
+    if (hasBackend) {
+      var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      var timer = controller ? setTimeout(function () { controller.abort(); }, 60000) : null;
+      // Sent as plain text so the browser can post straight to Google without a CORS preflight.
+      fetch(SUBMIT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        redirect: "follow",
+        signal: controller ? controller.signal : undefined
+      }).then(function (res) {
+        if (!res.ok) throw new Error("Server error " + res.status);
+        return res.json();
+      }).then(function (data) {
+        if (timer) clearTimeout(timer);
+        if (data && data.ok) ok(data); else fail((data && data.error) || "Something went wrong.");
+      }).catch(function (err) {
+        if (timer) clearTimeout(timer);
+        fail(err && err.name === "AbortError" ? "It took too long. Check your internet." : "Couldn't reach the server. Check your internet.");
+      });
+    } else {
+      window.__previewSubmissions = window.__previewSubmissions || [];
+      window.__previewSubmissions.push(payload);
+      setTimeout(function () { ok({ ok: true }); }, 400);
+    }
+  }
+
+  /* ---------- Helpers ---------- */
+  var app = document.getElementById("app");
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === "class") n.className = attrs[k];
+      else if (k === "text") n.textContent = attrs[k];
+      else if (k.slice(0, 2) === "on") n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function render(node, hideFooter) { app.innerHTML = ""; app.appendChild(node); document.querySelector("footer.help").classList.toggle("hidden", !!hideFooter); window.scrollTo(0, 0); updateWho(); }
+  function updateWho() {
+    var who = document.getElementById("who");
+    if (state.name) {
+      who.classList.remove("hidden");
+      document.getElementById("whoName").textContent = state.name;
+      document.getElementById("whoGrade").textContent = gradeLabel(state.grade);
+    } else who.classList.add("hidden");
+  }
+  document.getElementById("switchUser").addEventListener("click", function () {
+    state = { name: "", grade: "", band: "", done: {} };
+    store("me", null);
+    showWelcome();
+  });
+
+  function toggleChip(btn) { btn.setAttribute("aria-pressed", btn.getAttribute("aria-pressed") === "true" ? "false" : "true"); }
+  function pickOne(group, btn) {
+    group.querySelectorAll("[aria-pressed]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+    btn.setAttribute("aria-pressed", "true");
+  }
+
+  function confetti() {
+    var box = document.getElementById("confetti"); box.innerHTML = "";
+    var colors = ["#D7263D", "#FFB627", "#2E9E6A", "#FF8FA0", "#4C6FFF"];
+    for (var i = 0; i < 70; i++) {
+      var p = document.createElement("i");
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = colors[i % colors.length];
+      p.style.animationDuration = (1.8 + Math.random() * 1.6) + "s";
+      p.style.animationDelay = (Math.random() * .4) + "s";
+      box.appendChild(p);
+    }
+    setTimeout(function () { box.innerHTML = ""; }, 4000);
+  }
+
+  /* ---------- Screens ---------- */
+  function showWelcome() {
+    var nameInput = el("input", { type: "text", id: "nameInput", maxlength: "40", autocomplete: "off", placeholder: "Example: Maya R." });
+    nameInput.value = state.name || "";
+    var gradeWrap = el("div", { class: "chips", role: "group", "aria-label": "Grade" });
+    GRADES.forEach(function (g) {
+      var b = el("button", { type: "button", class: "chip", "aria-pressed": state.grade === g.id ? "true" : "false", "data-grade": g.id, text: g.label });
+      b.addEventListener("click", function () { pickOne(gradeWrap, b); check(); });
+      gradeWrap.appendChild(b);
+    });
+    var go = el("button", { type: "button", class: "btn", text: "Let's go! →" });
+    function check() {
+      var g = gradeWrap.querySelector('[aria-pressed="true"]');
+      go.disabled = !(nameInput.value.trim().length >= 2 && g);
+    }
+    nameInput.addEventListener("input", check);
+    go.addEventListener("click", function () {
+      var g = gradeWrap.querySelector('[aria-pressed="true"]');
+      state.name = nameInput.value.trim().replace(/\s+/g, " ");
+      state.grade = g.getAttribute("data-grade");
+      state.band = bandFor(state.grade);
+      state.done = load("done_" + state.name + "_" + state.grade) || {};
+      store("me", { name: state.name, grade: state.grade });
+      showMenu();
+    });
+    check();
+
+    render(el("section", { class: "card hero" }, [
+      el("img", { class: "flyer", src: FLYER_SRC, alt: "Red Ribbon Week flyer: Make a Difference. Be a Hero. Stay Drug Free. October 23 to 31." }),
+      el("h1", { text: "Be a Hero this Red Ribbon Week!" }),
+      el("p", { text: "October 23–31, we celebrate making healthy choices. Do the activities and send your answers to " + COUNSELOR.name + ", our school counselor." }),
+      el("label", { class: "field", for: "nameInput" }, ["Your first name and last initial ", el("span", { class: "hint", text: "(like Maya R.)" })]),
+      nameInput,
+      el("label", { class: "field", text: "Your grade" }),
+      gradeWrap,
+      el("div", { class: "actions", style: "justify-content:center" }, [go])
+    ]));
+    nameInput.focus();
+  }
+
+  function showMenu() {
+    var doneCount = ACTIVITIES.filter(function (a) { return state.done[a.id]; }).length;
+    var grid = el("div", { class: "grid" });
+    ACTIVITIES.forEach(function (a) {
+      var t = el("button", { type: "button", class: "tile" + (state.done[a.id] ? " is-done" : "") }, [
+        el("span", { class: "done", text: "Sent ✓" }),
+        el("span", { class: "emoji", "aria-hidden": "true", text: a.emoji }),
+        el("h3", { text: a.title }),
+        el("p", { text: a.blurb })
+      ]);
+      t.addEventListener("click", function () { openActivity(a.id); });
+      grid.appendChild(t);
+    });
+    render(el("section", {}, [
+      el("span", { class: "theme", text: "🦸 " + THEME }),
+      el("div", { class: "menu-head" }, [
+        el("h2", { text: "Hi, " + state.name.split(" ")[0] + "! Pick an activity" }),
+        el("span", { class: "progress", text: doneCount + " of " + ACTIVITIES.length + " sent" })
+      ]),
+      grid,
+      el("div", { class: "info-row" }, [
+        el("div", { class: "info contest" }, [
+          el("h3", { text: "🏆 Official Red Ribbon Photo Contest" }),
+          el("p", { text: "Decorate your front door, window, or mailbox with a red ribbon and this year's theme, \"Be a Hero. Stay Drug Free.\" A grown-up takes a photo and enters it. Winners get an iPad and $1,000 for their school!" }),
+          el("p", { class: "meta", text: "Grown-ups enter by Nov 2 · Voting Nov 3–17" }),
+          el("a", { class: "btn small", href: CONTEST_URL, target: "_blank", rel: "noopener", text: "Enter with a grown-up ↗" })
+        ]),
+        el("div", { class: "info counselor" }, [
+          el("h3", { text: "💜 Talk to " + COUNSELOR.name }),
+          el("p", { text: "Have a question, a worry, or something on your mind? " + COUNSELOR.name + ", our school counselor, is always happy to hear from you." }),
+          el("a", { class: "btn navy small", href: mailto("Red Ribbon Week - message from " + state.name), target: "_blank", rel: "noopener", text: "✉️ Email " + COUNSELOR.name })
+        ])
+      ])
+    ]), true);
+  }
+
+  function activityShell(id, body, collect) {
+    var a = ACTIVITIES.filter(function (x) { return x.id === id; })[0];
+    var status = el("div", { class: "status", role: "status" });
+    var submit = el("button", { type: "button", class: "btn", text: "Send to " + COUNSELOR.name });
+    var back = el("button", { type: "button", class: "btn ghost", text: "← Back" });
+    back.addEventListener("click", showMenu);
+    submit.addEventListener("click", function () {
+      var result = collect();
+      if (result.error) { status.className = "status err"; status.textContent = result.error; return; }
+      submit.disabled = true; back.disabled = true;
+      status.className = "status"; status.textContent = result.photo ? "Uploading your photo… this can take a few seconds." : "Sending…";
+      send({
+        name: state.name, grade: gradeLabel(state.grade), activity: a.title,
+        response: result.response, details: result.details || "", photo: result.photo || null
+      }, function () {
+        state.done[id] = true;
+        store("done_" + state.name + "_" + state.grade, state.done);
+        showThanks(a);
+      }, function (msg) {
+        submit.disabled = false; back.disabled = false;
+        status.className = "status err";
+        status.textContent = "Oops, that didn't send. Please try again. (" + msg + ")";
+      });
+    });
+    render(el("section", { class: "card" }, [
+      el("div", { class: "act-head" }, [el("span", { class: "emoji", "aria-hidden": "true", text: a.emoji }), el("h2", { text: a.title })]),
+      body,
+      el("div", { class: "actions" }, [back, submit]),
+      status
+    ]));
+  }
+
+  function showThanks(a) {
+    var cheers = ["Awesome job!", "You did it!", "Way to go!", "Super choice!", "Fantastic!"];
+    var again = el("button", { type: "button", class: "btn", text: "Do another activity" });
+    again.addEventListener("click", showMenu);
+    render(el("section", { class: "card thanks" }, [
+      el("div", { class: "big", text: "🎗️" }),
+      el("h2", { text: cheers[Math.floor(Math.random() * cheers.length)] }),
+      el("p", { text: "Your " + a.title + " was sent to " + COUNSELOR.name + "." }),
+      el("div", { class: "actions", style: "justify-content:center" }, [again])
+    ]));
+    confetti();
+  }
+
+  function counter(input, max) {
+    var c = el("div", { class: "count", text: "0 / " + max });
+    input.addEventListener("input", function () { c.textContent = input.value.length + " / " + max; });
+    return c;
+  }
+
+  /* ---------- Activities ---------- */
+  function openActivity(id) {
+    var b = state.band;
+
+    if (id === "spirit") {
+      var days = el("div", { class: "option-grid", role: "group", "aria-label": "Spirit day" });
+      SPIRIT_DAYS.forEach(function (d) {
+        var o = el("button", { type: "button", class: "opt", "aria-pressed": "false", "data-name": d.name },
+          [el("span", { class: "big", text: d.big }), d.name, el("small", { text: d.sub })]);
+        o.addEventListener("click", function () { pickOne(days, o); });
+        days.appendChild(o);
+      });
+      var dressed = el("div", { class: "chips", role: "group", "aria-label": "Did you dress up" });
+      ["Yes, I did! 🙌", "Not today"].forEach(function (t) {
+        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": t, text: t });
+        c.addEventListener("click", function () { pickOne(dressed, c); });
+        dressed.appendChild(c);
+      });
+      var note = el("input", { type: "text", maxlength: "150", id: "spiritNote", placeholder: b === "K-2" ? "I wore…" : "Tell us about your outfit" });
+      activityShell(id, el("div", {}, [
+        el("p", { class: "lead", text: "Which spirit day is it?" }), days,
+        el("label", { class: "field", text: "Did you dress up?" }), dressed,
+        el("label", { class: "field", for: "spiritNote" }, ["What did you wear? ", el("span", { class: "hint", text: "(optional)" })]), note
+      ]), function () {
+        var d = days.querySelector('[aria-pressed="true"]'), y = dressed.querySelector('[aria-pressed="true"]');
+        if (!d) return { error: "Pick which spirit day it is." };
+        if (!y) return { error: "Tell us if you dressed up." };
+        return { response: d.getAttribute("data-name") + " — " + y.getAttribute("data-v").replace(" 🙌", ""), details: note.value.trim() };
+      });
+    }
+
+    else if (id === "pledge") {
+      var agree = el("input", { type: "checkbox", id: "agree" });
+      var reasons = el("div", { class: "chips", role: "group", "aria-label": "Reasons" });
+      REASONS.forEach(function (r) {
+        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", text: r });
+        c.addEventListener("click", function () { toggleChip(c); });
+        reasons.appendChild(c);
+      });
+      var own = el("textarea", { maxlength: "300", id: "ownWords", placeholder: "I want to stay drug-free because…" });
+      var parts = [
+        el("p", { class: "lead", text: "Read the pledge out loud, then check the box." }),
+        el("div", { class: "pledge", text: "“" + PLEDGE[b] + "”" }),
+        el("label", { class: "check", for: "agree" }, [agree, "I take the Red Ribbon pledge!"]),
+        el("label", { class: "field", text: "Why is being drug-free important to you? Pick as many as you like." }),
+        reasons
+      ];
+      if (b !== "K-2") parts.push(el("label", { class: "field", for: "ownWords" }, ["In your own words ", el("span", { class: "hint", text: "(optional)" })]), own, counter(own, 300));
+      activityShell(id, el("div", {}, parts), function () {
+        if (!agree.checked) return { error: "Check the box to take the pledge." };
+        var picked = Array.prototype.map.call(reasons.querySelectorAll('[aria-pressed="true"]'), function (c) { return c.textContent.replace(/^\S+\s/, ""); });
+        return { response: "Took the pledge" + (picked.length ? " — " + picked.join(", ") : ""), details: own.value.trim() };
+      });
+    }
+
+    else if (id === "slogan") {
+      var slogan = el("textarea", { maxlength: "140", id: "slogan", placeholder: b === "K-2" ? "I say NO to drugs because…" : "Example: Be smart, don't start!" });
+      slogan.style.minHeight = "90px";
+      activityShell(id, el("div", {}, [
+        el("p", { class: "lead", text: SLOGAN_PROMPT[b] }),
+        el("label", { class: "field", for: "slogan", text: "My slogan" }), slogan, counter(slogan, 140),
+        el("p", { class: "hint", text: "Tip: Hold up a poster of your slogan on camera in class!" })
+      ]), function () {
+        var v = slogan.value.trim();
+        if (v.length < 3) return { error: "Write your slogan first." };
+        return { response: v };
+      });
+    }
+
+    else if (id === "scenarios") {
+      var list = SCENARIOS[b], chosen = [];
+      var wrap = el("div", {});
+      list.forEach(function (s, i) {
+        var answers = el("div", { class: "answers", role: "group", "aria-label": "Answers for question " + (i + 1) });
+        var fb = el("div", { class: "feedback", role: "status" });
+        s.a.forEach(function (ans) {
+          var btn = el("button", { type: "button", class: "answer", "aria-pressed": "false", text: ans.t });
+          btn.addEventListener("click", function () {
+            pickOne(answers, btn);
+            chosen[i] = ans;
+            fb.className = "feedback " + (ans.good ? "good" : "think");
+            fb.textContent = (ans.good ? "👍 " : "💭 ") + ans.f;
+          });
+          answers.appendChild(btn);
+        });
+        wrap.appendChild(el("div", { class: "scenario" }, [el("h3", { text: (i + 1) + ". " + s.q }), answers, fb]));
+      });
+      activityShell(id, el("div", {}, [el("p", { class: "lead", text: "Read each story and pick what you would do." }), wrap]), function () {
+        for (var i = 0; i < list.length; i++) if (!chosen[i]) return { error: "Answer question " + (i + 1) + " first." };
+        var good = chosen.filter(function (c) { return c.good; }).length;
+        return {
+          response: good + " of " + list.length + " safe choices",
+          details: chosen.map(function (c, i) { return "Q" + (i + 1) + ": " + c.t + (c.good ? " ✓" : " ✗"); }).join(" | ")
+        };
+      });
+    }
+
+    else if (id === "bingo") {
+      var board = el("div", { class: "bingo", role: "group", "aria-label": "Bingo board" });
+      var banner = el("div", { class: "bingo-banner", "aria-live": "polite" });
+      var LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      function marks() { return Array.prototype.map.call(board.children, function (c) { return c.getAttribute("aria-pressed") === "true"; }); }
+      function hasBingo() { var m = marks(); return LINES.some(function (l) { return m[l[0]] && m[l[1]] && m[l[2]]; }); }
+      BINGO[b].forEach(function (sq) {
+        var s = el("button", { type: "button", class: "sq", "aria-pressed": "false", "data-t": sq[1] }, [el("span", { class: "big", text: sq[0] }), sq[1]]);
+        s.addEventListener("click", function () {
+          var before = hasBingo(); toggleChip(s);
+          var now = hasBingo();
+          banner.textContent = now ? "🎉 BINGO! 🎉" : "";
+          if (now && !before) confetti();
+        });
+        board.appendChild(s);
+      });
+      activityShell(id, el("div", {}, [
+        el("p", { class: "lead", text: "Tap each square you did this week. Get 3 in a row for BINGO!" }), board, banner
+      ]), function () {
+        var picked = Array.prototype.filter.call(board.children, function (c) { return c.getAttribute("aria-pressed") === "true"; })
+          .map(function (c) { return c.getAttribute("data-t"); });
+        if (!picked.length) return { error: "Tap at least one square." };
+        return { response: picked.length + " of 9 squares" + (hasBingo() ? " — BINGO!" : ""), details: picked.join(", ") };
+      });
+    }
+
+    else if (id === "future") {
+      var dreamGrid = el("div", { class: "option-grid", role: "group", "aria-label": "Dream job" });
+      DREAMS.forEach(function (d) {
+        var o = el("button", { type: "button", class: "opt", "aria-pressed": "false", "data-name": d[1] }, [el("span", { class: "big", text: d[0] }), d[1]]);
+        o.addEventListener("click", function () { pickOne(dreamGrid, o); });
+        dreamGrid.appendChild(o);
+      });
+      var max = b === "6-8" ? 1000 : (b === "3-5" ? 500 : 200);
+      var text = el("textarea", { maxlength: String(max), id: "futureText", placeholder: b === "K-2" ? "When I grow up I want to…" : (b === "6-8" ? "Dear future me…" : "My big dream is…") });
+      if (b === "6-8") text.style.minHeight = "200px";
+      var parts = [];
+      if (b !== "6-8") parts.push(el("p", { class: "lead", text: "What do you want to be? Pick one (or skip)." }), dreamGrid);
+      parts.push(el("label", { class: "field", for: "futureText", text: FUTURE_PROMPT[b] }), text, counter(text, max));
+      activityShell(id, el("div", {}, parts), function () {
+        var d = dreamGrid.querySelector('[aria-pressed="true"]');
+        var v = text.value.trim();
+        if (v.length < 3 && !d) return { error: b === "6-8" ? "Write your letter first." : "Pick a dream or write something first." };
+        return { response: (d ? "Dream: " + d.getAttribute("data-name") + (v ? " — " : "") : "") + v };
+      });
+    }
+
+    else if (id === "photo") {
+      var photoData = null;
+      var fileInput = el("input", { type: "file", accept: "image/*", id: "photoFile" });
+      var dropText = el("span", { text: "Tap to choose or take a photo" });
+      var drop = el("label", { class: "drop", for: "photoFile" }, [el("span", { class: "big", "aria-hidden": "true", text: "📷" }), dropText, el("span", { class: "hint", text: "JPG or PNG" }), fileInput]);
+      var preview = el("img", { class: "preview-img hidden", alt: "Your photo" });
+      var photoMsg = el("div", { class: "status", role: "status" });
+      var kind = el("div", { class: "chips", role: "group", "aria-label": "What is in your photo" });
+      ["🎉 Spirit day outfit", "🖍️ My poster", "🎗️ Red ribbon decoration", "✨ Something else"].forEach(function (t) {
+        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", text: t });
+        c.addEventListener("click", function () { pickOne(kind, c); });
+        kind.appendChild(c);
+      });
+      var caption = el("input", { type: "text", maxlength: "150", id: "caption", placeholder: "Tell Mrs. Pernal about your photo (optional)" });
+      var okay = el("input", { type: "checkbox", id: "okay" });
+
+      fileInput.addEventListener("change", function () {
+        var f = fileInput.files && fileInput.files[0];
+        photoData = null; preview.classList.add("hidden"); photoMsg.textContent = "";
+        if (!f) return;
+        if (!/^image\//.test(f.type)) { photoMsg.className = "status err"; photoMsg.textContent = "That file isn't a picture. Try a JPG or PNG."; return; }
+        photoMsg.className = "status"; photoMsg.textContent = "Getting your photo ready…";
+        shrinkImage(f, 1600, function (err, dataUrl) {
+          if (err) { photoMsg.className = "status err"; photoMsg.textContent = "Hmm, we couldn't open that picture. Try a different one."; return; }
+          photoData = dataUrl;
+          preview.src = dataUrl; preview.classList.remove("hidden");
+          dropText.textContent = "Tap to pick a different photo";
+          photoMsg.textContent = "";
+        });
+      });
+
+      activityShell(id, el("div", {}, [
+        el("p", { class: "lead", text: "Share a picture of your spirit day outfit, your poster, or your red ribbon decorations with " + COUNSELOR.name + "!" }),
+        drop, preview, photoMsg,
+        el("label", { class: "field", text: "What's in your photo?" }), kind,
+        el("label", { class: "field", for: "caption", text: "Caption" }), caption,
+        el("label", { class: "check", for: "okay", style: "margin-top:18px" }, [okay, "A grown-up at home said it's okay to send this photo."])
+      ]), function () {
+        if (!photoData) return { error: "Choose a photo first." };
+        var k = kind.querySelector('[aria-pressed="true"]');
+        if (!k) return { error: "Tell us what's in your photo." };
+        if (!okay.checked) return { error: "Ask a grown-up, then check the box." };
+        return {
+          response: k.textContent.replace(/^\S+\s/, "") + (caption.value.trim() ? " — " + caption.value.trim() : ""),
+          photo: { dataUrl: photoData }
+        };
+      });
+    }
+  }
+
+  /* Shrinks a photo so it uploads quickly (max side in pixels, saved as JPEG). */
+  function shrinkImage(file, maxSide, done) {
+    var reader = new FileReader();
+    reader.onerror = function () { done(new Error("read")); };
+    reader.onload = function () {
+      var img = new Image();
+      img.onerror = function () { done(new Error("decode")); };
+      img.onload = function () {
+        var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+        var c = document.createElement("canvas");
+        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        done(null, c.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ---------- Start ---------- */
+  if (state.name) showMenu(); else showWelcome();
+})();
+</script>
+</body>
+</html>
