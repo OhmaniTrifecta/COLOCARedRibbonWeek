@@ -7,5 +7,5 @@
  * Until this is filled in, the site runs in preview mode and nothing is saved.
  */
 window.RRW_CONFIG = {
-  SUBMIT_URL: ""
+  SUBMIT_URL: "https://script.google.com/macros/s/AKfycbyLQtEjhCd9IB2RUtO574QSBvzSU3N40SomZusLRAmKOcdue781VsJ3Enr8PYC_HHUu/exec"
 };
