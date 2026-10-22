@@ -181,6 +181,28 @@
   .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
   .preview-img { display: block; max-width: 100%; max-height: 340px; margin: 12px auto 0; border-radius: 14px; box-shadow: var(--shadow); }
 
+  .week { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 12px 0 20px; }
+  .day {
+    font: inherit; cursor: pointer; text-align: center; color: var(--ink); background: #fff;
+    border: 3px solid var(--line); border-radius: 16px; padding: 12px 8px; font-weight: 600; font-size: 15px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px; line-height: 1.25;
+  }
+  .day .big { font-size: 30px; }
+  .day b { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+  .day small { margin-top: 4px; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 8px; background: #F4EEE7; color: var(--muted); }
+  .day:hover:not([disabled]) { border-color: var(--red); }
+  .day[aria-pressed="true"] { border-color: var(--red); background: var(--red-soft); }
+  .day-today small { background: var(--red); color: #fff; }
+  .day-done small { background: var(--green); color: #fff; }
+  .day-late small { background: #FFF1D6; color: #7A5200; }
+  .day[disabled] { opacity: .5; cursor: not-allowed; }
+  .spirit-card { display: flex; gap: 16px; align-items: center; background: linear-gradient(135deg, #FFF1D6, #FFE3E6); border-radius: 18px; padding: 18px; }
+  .spirit-card .big { font-size: 56px; line-height: 1; }
+  .spirit-card h3 { margin: 2px 0; font-size: 24px; }
+  .spirit-card p { margin: 0; }
+  .spirit-card small { font-weight: 700; color: var(--red-dark); text-transform: uppercase; font-size: 13px; letter-spacing: .4px; }
+  .spirit-card.soon { display: block; text-align: center; }
+
   .status { margin-top: 14px; font-weight: 700; min-height: 24px; }
   .status.err { color: var(--red-dark); }
 
@@ -251,14 +273,25 @@
     { id: "photo",    emoji: "📸", title: "Share a Photo",       blurb: "Send a picture of your spirit day or poster." }
   ];
 
+  /* Spirit days: each one opens on its date (YYYY-MM-DD). */
   var SPIRIT_DAYS = [
-    { id: "red",     big: "❤️", name: "Red Day",            sub: "Wear red" },
-    { id: "shades",  big: "😎", name: "My Future Is Bright", sub: "Wear sunglasses" },
-    { id: "jersey",  big: "🏈", name: "Team Up",            sub: "Wear a jersey" },
-    { id: "socks",   big: "🧦", name: "Sock It to Drugs",    sub: "Wear crazy socks" },
-    { id: "hats",    big: "🎩", name: "Hats Off",           sub: "Wear a silly hat" },
-    { id: "costume", big: "🎃", name: "Say Boo to Drugs",   sub: "Wear a costume" }
+    { date: "2026-10-23", day: "Fri, Oct 23", big: "❤️", name: "Wear Red",            sub: "Wear something red" },
+    { date: "2026-10-26", day: "Mon, Oct 26", big: "😎", name: "My Future Is Bright", sub: "Wear sunglasses" },
+    { date: "2026-10-27", day: "Tue, Oct 27", big: "🏈", name: "Team Up", sub: "Wear a jersey or team colors" },
+    { date: "2026-10-28", day: "Wed, Oct 28", big: "🧦", name: "Sock It to Drugs",    sub: "Wear crazy socks" },
+    { date: "2026-10-29", day: "Thu, Oct 29", big: "🎩", name: "Hats Off", sub: "Wear a fun hat" },
+    { date: "2026-10-30", day: "Fri, Oct 30", big: "🎃", name: "Say Boo to Drugs",   sub: "Wear a costume" }
   ];
+
+  /* Today's date in the student's time zone. For testing, add ?day=2026-10-26 to the address. */
+  function todayISO() {
+    var m = /[?&]day=(\d{4}-\d{2}-\d{2})/.exec(location.search);
+    if (m) return m[1];
+    var d = new Date();
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function spiritToday() { var t = todayISO(); return SPIRIT_DAYS.filter(function (d) { return d.date === t; })[0] || null; }
+  function nextSpiritDay() { var t = todayISO(); return SPIRIT_DAYS.filter(function (d) { return d.date > t; })[0] || null; }
 
   var PLEDGE = {
     "K-2": "I promise to take care of my body. I will only take medicine from a grown-up I trust, and I will say NO to things that can hurt me.",
@@ -488,14 +521,22 @@
   }
 
   function showMenu() {
-    var doneCount = ACTIVITIES.filter(function (a) { return state.done[a.id]; }).length;
+    var today = spiritToday(), next = nextSpiritDay();
+    function isDone(a) { return a.id === "spirit" ? !!(today && state.done["spirit-" + today.date]) : !!state.done[a.id]; }
+    function blurbFor(a) {
+      if (a.id !== "spirit") return a.blurb;
+      if (today) return "Today: " + today.name + " " + today.big;
+      if (next) return "Next: " + next.name + " " + next.big + " (" + next.day + ")";
+      return "Spirit week is over. Check in for any day you missed!";
+    }
+    var doneCount = ACTIVITIES.filter(isDone).length;
     var grid = el("div", { class: "grid" });
     ACTIVITIES.forEach(function (a) {
-      var t = el("button", { type: "button", class: "tile" + (state.done[a.id] ? " is-done" : "") }, [
-        el("span", { class: "done", text: "Sent ✓" }),
+      var t = el("button", { type: "button", class: "tile" + (isDone(a) ? " is-done" : "") }, [
+        el("span", { class: "done", text: a.id === "spirit" ? "Today ✓" : "Sent ✓" }),
         el("span", { class: "emoji", "aria-hidden": "true", text: a.emoji }),
         el("h3", { text: a.title }),
-        el("p", { text: a.blurb })
+        el("p", { text: blurbFor(a) })
       ]);
       t.addEventListener("click", function () { openActivity(a.id); });
       grid.appendChild(t);
@@ -504,7 +545,7 @@
       el("span", { class: "theme", text: "🦸 " + THEME }),
       el("div", { class: "menu-head" }, [
         el("h2", { text: "Hi, " + state.name.split(" ")[0] + "! Pick an activity" }),
-        el("span", { class: "progress", text: doneCount + " of " + ACTIVITIES.length + " sent" })
+        el("span", { class: "progress", text: doneCount + " of " + ACTIVITIES.length + " done today" })
       ]),
       grid,
       el("div", { class: "info-row" }, [
@@ -519,7 +560,8 @@
     ]));
   }
 
-  function activityShell(id, body, collect) {
+  function activityShell(id, body, collect, opts) {
+    opts = opts || {};
     var a = ACTIVITIES.filter(function (x) { return x.id === id; })[0];
     var status = el("div", { class: "status", role: "status" });
     var submit = el("button", { type: "button", class: "btn", text: "Send to " + COUNSELOR.name });
@@ -534,7 +576,7 @@
         name: state.name, grade: gradeLabel(state.grade), activity: a.title,
         response: result.response, details: result.details || "", photo: result.photo || null
       }, function () {
-        state.done[id] = true;
+        state.done[result.doneKey || id] = true;
         store("done_" + state.name + "_" + state.grade, state.done);
         showThanks(a);
       }, function (msg) {
@@ -546,7 +588,7 @@
     render(el("section", { class: "card" }, [
       el("div", { class: "act-head" }, [el("span", { class: "emoji", "aria-hidden": "true", text: a.emoji }), el("h2", { text: a.title })]),
       body,
-      el("div", { class: "actions" }, [back, submit]),
+      el("div", { class: "actions" }, opts.noSubmit ? [back] : [back, submit]),
       status
     ]));
   }
@@ -575,30 +617,92 @@
     var b = state.band;
 
     if (id === "spirit") {
-      var days = el("div", { class: "option-grid", role: "group", "aria-label": "Spirit day" });
-      SPIRIT_DAYS.forEach(function (d) {
-        var o = el("button", { type: "button", class: "opt", "aria-pressed": "false", "data-name": d.name },
-          [el("span", { class: "big", text: d.big }), d.name, el("small", { text: d.sub })]);
-        o.addEventListener("click", function () { pickOne(days, o); });
-        days.appendChild(o);
-      });
-      var dressed = el("div", { class: "chips", role: "group", "aria-label": "Did you dress up" });
-      ["Yes, I did! 🙌", "Not today"].forEach(function (t) {
-        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": t, text: t });
-        c.addEventListener("click", function () { pickOne(dressed, c); });
-        dressed.appendChild(c);
-      });
-      var note = el("input", { type: "text", maxlength: "150", id: "spiritNote", placeholder: b === "K-2" ? "I wore…" : "Tell us about your outfit" });
+      var t = todayISO();
+      var selected = spiritToday();
+      if (!selected) {
+        // No spirit day today: preselect the most recent missed day, if any.
+        var missed = SPIRIT_DAYS.filter(function (d) { return d.date < t && !state.done["spirit-" + d.date]; });
+        selected = missed.length ? missed[missed.length - 1] : null;
+      }
+      var started = SPIRIT_DAYS[0].date <= t;
+
+      var week = el("div", { class: "week", role: "group", "aria-label": "Spirit week schedule" });
+      var detail = el("div", {});
+      var picker = photoPicker("spiritPhoto", "Show off your " + "outfit! Add a photo");
+      var dressed, note;
+
+      function dayState(d) {
+        if (state.done["spirit-" + d.date]) return "done";
+        if (d.date === t) return "today";
+        if (d.date < t) return "late";
+        return "soon";
+      }
+      function drawWeek() {
+        week.innerHTML = "";
+        SPIRIT_DAYS.forEach(function (d) {
+          var st = dayState(d), locked = d.date > t;
+          var label = { done: "Sent ✓", today: "Today", late: "Missed it? Check in", soon: "Coming soon 🔒" }[st];
+          var btn = el("button", { type: "button", class: "day day-" + st, "aria-pressed": selected && selected.date === d.date ? "true" : "false" },
+            [el("span", { class: "big", text: d.big }), el("b", { text: d.day }), d.name, el("small", { text: label })]);
+          if (locked) btn.disabled = true;
+          if (d.date === t) btn.setAttribute("aria-current", "date");
+          btn.addEventListener("click", function () { selected = d; drawWeek(); drawDetail(); });
+          week.appendChild(btn);
+        });
+      }
+      function drawDetail() {
+        detail.innerHTML = "";
+        if (!selected) {
+          var nx = nextSpiritDay();
+          detail.appendChild(el("div", { class: "spirit-card soon" }, [
+            el("h3", { text: started ? "No spirit day today!" : "Spirit days start Friday, Oct 23!" }),
+            el("p", { text: nx ? "Next up: " + nx.day + " is " + nx.name + " " + nx.big + ". " + nx.sub + "!" : "Great job this week!" })
+          ]));
+          return;
+        }
+        var late = selected.date < t;
+        dressed = el("div", { class: "chips", role: "group", "aria-label": "Did you dress up" });
+        ["Yes, I did! 🙌", "Not this time"].forEach(function (txt) {
+          var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", "data-v": txt, text: txt });
+          c.addEventListener("click", function () { pickOne(dressed, c); });
+          dressed.appendChild(c);
+        });
+        note = el("input", { type: "text", maxlength: "150", id: "spiritNote", placeholder: b === "K-2" ? "I wore…" : "Tell us about your outfit" });
+        picker.reset();
+        detail.appendChild(el("div", { class: "spirit-card" }, [
+          el("span", { class: "big", "aria-hidden": "true", text: selected.big }),
+          el("div", {}, [
+            el("small", { text: selected.day + (late ? " · late check-in" : selected.date === t ? " · today" : "") }),
+            el("h3", { text: selected.name }),
+            el("p", { text: selected.sub + "!" })
+          ])
+        ]));
+        if (state.done["spirit-" + selected.date]) detail.appendChild(el("p", { class: "hint", text: "You already checked in for this day. You can send another check-in or photo if you like." }));
+        detail.appendChild(el("label", { class: "field", text: "Did you dress up?" }));
+        detail.appendChild(dressed);
+        detail.appendChild(el("label", { class: "field", for: "spiritNote" }, ["What did you wear? ", el("span", { class: "hint", text: "(optional)" })]));
+        detail.appendChild(note);
+        detail.appendChild(el("label", { class: "field" }, ["Share a photo ", el("span", { class: "hint", text: "(optional)" })]));
+        detail.appendChild(picker.node);
+      }
+      drawWeek(); drawDetail();
+
       activityShell(id, el("div", {}, [
-        el("p", { class: "lead", text: "Which spirit day is it?" }), days,
-        el("label", { class: "field", text: "Did you dress up?" }), dressed,
-        el("label", { class: "field", for: "spiritNote" }, ["What did you wear? ", el("span", { class: "hint", text: "(optional)" })]), note
+        el("p", { class: "lead", text: "Each day has a new theme. Dress up, then check in here!" }), week, detail
       ]), function () {
-        var d = days.querySelector('[aria-pressed="true"]'), y = dressed.querySelector('[aria-pressed="true"]');
-        if (!d) return { error: "Pick which spirit day it is." };
+        if (!selected) return { error: "There's no spirit day to check in for yet." };
+        var y = dressed.querySelector('[aria-pressed="true"]');
         if (!y) return { error: "Tell us if you dressed up." };
-        return { response: d.getAttribute("data-name") + " — " + y.getAttribute("data-v").replace(" 🙌", ""), details: note.value.trim() };
-      });
+        var ph = picker.get();
+        if (ph && ph.error) return { error: ph.error };
+        var late = selected.date < t;
+        return {
+          response: selected.day + " · " + selected.name + " — " + y.getAttribute("data-v").replace(" 🙌", "") + (late ? " (late check-in)" : ""),
+          details: note.value.trim(),
+          photo: ph || null,
+          doneKey: "spirit-" + selected.date
+        };
+      }, { noSubmit: !selected && !SPIRIT_DAYS.some(function (d) { return d.date <= t; }) });
     }
 
     else if (id === "pledge") {
@@ -715,70 +819,99 @@
     }
 
     else if (id === "photo") {
-      var photoData = null;
-      var fileInput = el("input", { type: "file", accept: "image/*", id: "photoFile" });
-      var dropText = el("span", { text: "Tap to choose or take a photo" });
-      var drop = el("label", { class: "drop", for: "photoFile" }, [el("span", { class: "big", "aria-hidden": "true", text: "📷" }), dropText, el("span", { class: "hint", text: "JPG or PNG" }), fileInput]);
-      var preview = el("img", { class: "preview-img hidden", alt: "Your photo" });
-      var photoMsg = el("div", { class: "status", role: "status" });
+      var pk = photoPicker("photoFile", "Tap to choose or take a photo");
       var kind = el("div", { class: "chips", role: "group", "aria-label": "What is in your photo" });
-      ["🎉 Spirit day outfit", "🖍️ My poster", "🎗️ Red ribbon decoration", "✨ Something else"].forEach(function (t) {
-        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", text: t });
+      ["🎉 Spirit day outfit", "🖍️ My poster", "🎗️ Red ribbon decoration", "✨ Something else"].forEach(function (txt) {
+        var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", text: txt });
         c.addEventListener("click", function () { pickOne(kind, c); });
         kind.appendChild(c);
       });
       var caption = el("input", { type: "text", maxlength: "150", id: "caption", placeholder: "Tell Mrs. Pernal about your photo (optional)" });
-      var okay = el("input", { type: "checkbox", id: "okay" });
-
-      fileInput.addEventListener("change", function () {
-        var f = fileInput.files && fileInput.files[0];
-        photoData = null; preview.classList.add("hidden"); photoMsg.textContent = "";
-        if (!f) return;
-        if (!/^image\//.test(f.type)) { photoMsg.className = "status err"; photoMsg.textContent = "That file isn't a picture. Try a JPG or PNG."; return; }
-        photoMsg.className = "status"; photoMsg.textContent = "Getting your photo ready…";
-        shrinkImage(f, 1600, function (err, dataUrl) {
-          if (err) { photoMsg.className = "status err"; photoMsg.textContent = "Hmm, we couldn't open that picture. Try a different one."; return; }
-          photoData = dataUrl;
-          preview.src = dataUrl; preview.classList.remove("hidden");
-          dropText.textContent = "Tap to pick a different photo";
-          photoMsg.textContent = "";
-        });
-      });
 
       activityShell(id, el("div", {}, [
-        el("p", { class: "lead", text: "Share a picture of your spirit day outfit, your poster, or your red ribbon decorations with " + COUNSELOR.name + "!" }),
-        drop, preview, photoMsg,
+        el("p", { class: "lead", text: "Share a picture of your poster, your red ribbon decorations, or anything Red Ribbon Week with " + COUNSELOR.name + "!" }),
+        pk.node,
         el("label", { class: "field", text: "What's in your photo?" }), kind,
-        el("label", { class: "field", for: "caption", text: "Caption" }), caption,
-        el("label", { class: "check", for: "okay", style: "margin-top:18px" }, [okay, "A grown-up at home said it's okay to send this photo."])
+        el("label", { class: "field", for: "caption", text: "Caption" }), caption
       ]), function () {
-        if (!photoData) return { error: "Choose a photo first." };
+        var ph = pk.get();
+        if (!ph) return { error: "Choose a photo first." };
+        if (ph.error) return { error: ph.error };
         var k = kind.querySelector('[aria-pressed="true"]');
         if (!k) return { error: "Tell us what's in your photo." };
-        if (!okay.checked) return { error: "Ask a grown-up, then check the box." };
         return {
           response: k.textContent.replace(/^\S+\s/, "") + (caption.value.trim() ? " — " + caption.value.trim() : ""),
-          photo: { dataUrl: photoData }
+          photo: ph
         };
       });
     }
   }
 
+  /* A photo chooser with preview and the "grown-up said okay" checkbox.
+     get() returns null (no photo), {error}, or {dataUrl, thumbUrl}. */
+  function photoPicker(inputId, prompt) {
+    var data = null, busy = false;
+    var input = el("input", { type: "file", accept: "image/*", id: inputId });
+    var text = el("span", { text: prompt });
+    var drop = el("label", { class: "drop", for: inputId }, [el("span", { class: "big", "aria-hidden": "true", text: "📷" }), text, el("span", { class: "hint", text: "JPG or PNG" }), input]);
+    var preview = el("img", { class: "preview-img hidden", alt: "Your photo" });
+    var msg = el("div", { class: "status", role: "status" });
+    var okay = el("input", { type: "checkbox", id: inputId + "Okay" });
+    var okayRow = el("label", { class: "check hidden", for: inputId + "Okay", style: "margin-top:14px" }, [okay, "A grown-up at home said it's okay to send this photo."]);
+    var remove = el("button", { type: "button", class: "linkbtn hidden", text: "Remove photo", style: "display:block;margin:8px auto 0" });
+
+    function clear() {
+      data = null; busy = false; input.value = ""; okay.checked = false;
+      preview.classList.add("hidden"); okayRow.classList.add("hidden"); remove.classList.add("hidden");
+      text.textContent = prompt; msg.textContent = "";
+    }
+    remove.addEventListener("click", clear);
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      data = null; preview.classList.add("hidden"); msg.textContent = "";
+      if (!f) return;
+      if (!/^image\//.test(f.type)) { msg.className = "status err"; msg.textContent = "That file isn't a picture. Try a JPG or PNG."; return; }
+      busy = true; msg.className = "status"; msg.textContent = "Getting your photo ready…";
+      shrinkImage(f, function (err, full, thumb) {
+        busy = false;
+        if (err) { msg.className = "status err"; msg.textContent = "Hmm, we couldn't open that picture. Try a different one."; return; }
+        data = { dataUrl: full, thumbUrl: thumb };
+        preview.src = full; preview.classList.remove("hidden");
+        okayRow.classList.remove("hidden"); remove.classList.remove("hidden");
+        text.textContent = "Tap to pick a different photo"; msg.textContent = "";
+      });
+    });
+    return {
+      node: el("div", {}, [drop, preview, remove, msg, okayRow]),
+      reset: clear,
+      get: function () {
+        if (busy) return { error: "Hang on, your photo is still getting ready." };
+        if (!data) return null;
+        if (!okay.checked) return { error: "Ask a grown-up, then check the box under your photo." };
+        return data;
+      }
+    };
+  }
+
   /* Shrinks a photo so it uploads quickly (max side in pixels, saved as JPEG). */
-  function shrinkImage(file, maxSide, done) {
+  function shrinkImage(file, done) {
     var reader = new FileReader();
     reader.onerror = function () { done(new Error("read")); };
     reader.onload = function () {
       var img = new Image();
       img.onerror = function () { done(new Error("decode")); };
       img.onload = function () {
-        var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
-        var c = document.createElement("canvas");
-        c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
-        var ctx = c.getContext("2d");
-        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        done(null, c.toDataURL("image/jpeg", 0.85));
+        function render(maxSide, quality) {
+          var scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          var c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.width * scale)); c.height = Math.max(1, Math.round(img.height * scale));
+          var ctx = c.getContext("2d");
+          ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          return c.toDataURL("image/jpeg", quality);
+        }
+        // Full photo for Drive, small thumbnail to show inside the spreadsheet.
+        done(null, render(1600, 0.85), render(300, 0.75));
       };
       img.src = reader.result;
     };

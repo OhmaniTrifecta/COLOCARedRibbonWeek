@@ -2,10 +2,30 @@
 
 A student activity site for Red Ribbon Week (October 23–31), run by Mrs. Pernal, School Counselor.
 
-Students enter their first name and last initial and their grade (K–8). They then complete seven activities: Spirit Day Check-In, Take the Pledge, Slogan Contest, What Would You Do?, Healthy Choices Bingo, My Bright Future, and Share a Photo. The site also links to the official Red Ribbon photo contest and has a button to email Mrs. Pernal.
+Students enter their first name and last initial and their grade (K–8). They then complete seven activities: Spirit Day Check-In, Take the Pledge, Slogan Contest, What Would You Do?, Healthy Choices Bingo, My Bright Future, and Share a Photo. The site also links to the official Red Ribbon photo contest.
 
 - **Website:** hosted on Vercel (this repo)
-- **Data:** saved to Mrs. Pernal's Google Sheet. Photos go to a private Google Drive folder.
+- **Data:** saved to Mrs. Pernal's Google Sheet.
+- **Photos:** each photo shows as a thumbnail in the Sheet's **Photo** column. The full-size photo is saved to a private Google Drive folder and linked in the **Photo link** column.
+
+## Spirit days
+
+Each spirit day opens on its own date:
+
+| Date | Theme |
+|---|---|
+| Fri, Oct 23 | Wear Red ❤️ |
+| Mon, Oct 26 | My Future Is Bright 😎 |
+| Tue, Oct 27 | Team Up 🏈 |
+| Wed, Oct 28 | Sock It to Drugs 🧦 |
+| Thu, Oct 29 | Hats Off 🎩 |
+| Fri, Oct 30 | Say Boo to Drugs 🎃 |
+
+- Future days are locked.
+- Students can check in late for a day they missed, and the Sheet marks it "(late check-in)".
+- Each check-in can include an optional photo.
+
+**To preview a specific day**, add `?day=2026-10-26` to the end of the site's address. You can use any date. Don't share this version with students.
 
 ## Files
 
@@ -66,7 +86,7 @@ After editing `Code.gs`, click **Deploy → Manage deployments → ✏️ Edit**
 
 All activity text lives near the top of the `<script>` in `index.html`:
 
-- **Mrs. Pernal's email:** `COUNSELOR`
+- **Counselor's name:** `COUNSELOR`
 - **Contest link:** `CONTEST_URL`
 - **Theme:** `THEME`
 - **Spirit days:** `SPIRIT_DAYS`
