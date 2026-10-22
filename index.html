@@ -165,18 +165,11 @@
   .info h3 { margin: 0 0 6px; font-size: 21px; }
   .info p { margin: 0 0 14px; font-size: 16px; }
   .info.contest { background: linear-gradient(135deg, #FFF1D6, #FFE3E6); }
-  .info.counselor { background: var(--lavender-soft); }
   .info .meta { font-size: 14px; color: var(--muted); margin: -6px 0 14px; }
   a.btn { display: inline-block; text-decoration: none; text-align: center; }
   .btn.navy { background: var(--navy); box-shadow: 0 4px 0 #0C0926; font-size: 18px; }
   .btn.small { font-size: 17px; padding: 11px 18px; }
 
-  footer.help {
-    margin-top: 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-    background: var(--lavender-soft); border-radius: var(--radius); padding: 14px 18px; font-size: 16px;
-  }
-  footer.help .txt { flex: 1 1 220px; }
-  footer.help b { display: block; }
 
   .drop {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
@@ -226,11 +219,6 @@
 
   <main id="app" aria-live="polite"></main>
 
-  <footer class="help">
-    <span style="font-size:34px" aria-hidden="true">💜</span>
-    <div class="txt"><b>Need to talk? Mrs. Pernal is here for you.</b>School Counselor · <span id="counselorEmailText"></span></div>
-    <a class="btn navy small" id="footerEmail" target="_blank" rel="noopener">✉️ Email Mrs. Pernal</a>
-  </footer>
 </div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
 
@@ -240,16 +228,11 @@
   "use strict";
 
   /* ---------- Settings ---------- */
-  var COUNSELOR = { name: "Mrs. Pernal", email: "rpernal@coloca.connectionsacademy.org" };
+  var COUNSELOR = { name: "Mrs. Pernal" };
   var CONTEST_URL = "https://www.redribbon.org/contest";
   var THEME = "Make a Difference. Be a Hero. Stay Drug Free.";
   var FLYER_SRC = "assets/flyer.jpg";
 
-  function mailto(subject) {
-    return "mailto:" + COUNSELOR.email + "?subject=" + encodeURIComponent(subject);
-  }
-  document.getElementById("counselorEmailText").textContent = COUNSELOR.email;
-  document.getElementById("footerEmail").href = mailto("Red Ribbon Week - I'd like to talk");
 
   /* ---------- Content ---------- */
   var GRADES = [
@@ -429,7 +412,7 @@
     (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
     return n;
   }
-  function render(node, hideFooter) { app.innerHTML = ""; app.appendChild(node); document.querySelector("footer.help").classList.toggle("hidden", !!hideFooter); window.scrollTo(0, 0); updateWho(); }
+  function render(node) { app.innerHTML = ""; app.appendChild(node); window.scrollTo(0, 0); updateWho(); }
   function updateWho() {
     var who = document.getElementById("who");
     if (state.name) {
@@ -530,14 +513,10 @@
           el("p", { text: "Decorate your front door, window, or mailbox with a red ribbon and this year's theme, \"Be a Hero. Stay Drug Free.\" A grown-up takes a photo and enters it. Winners get an iPad and $1,000 for their school!" }),
           el("p", { class: "meta", text: "Grown-ups enter by Nov 2 · Voting Nov 3–17" }),
           el("a", { class: "btn small", href: CONTEST_URL, target: "_blank", rel: "noopener", text: "Enter with a grown-up ↗" })
-        ]),
-        el("div", { class: "info counselor" }, [
-          el("h3", { text: "💜 Talk to " + COUNSELOR.name }),
-          el("p", { text: "Have a question, a worry, or something on your mind? " + COUNSELOR.name + ", our school counselor, is always happy to hear from you." }),
-          el("a", { class: "btn navy small", href: mailto("Red Ribbon Week - message from " + state.name), target: "_blank", rel: "noopener", text: "✉️ Email " + COUNSELOR.name })
         ])
+
       ])
-    ]), true);
+    ]));
   }
 
   function activityShell(id, body, collect) {
